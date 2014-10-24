@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta name="viewport" content="initial-scale=1, user-scalable=0, minimal-ui" charset="UTF-8">
+    <title>下拉刷新</title>
+<style>
+*{
+    margin: 0;
+    padding:0;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-text-size-adjust:none;
+}
+html{
+    font-size:10px;
+}
+body{
+    background-color: #f5f5f5;
+    font-size: 1.2em;
+}
+.outer{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction:column;
+    -webkit-box-orient:vertical;
+    box-orient:vertical;
+    -webkit-flex-direction:column;
+    flex-direction:column;
+}
+.header{
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    font-size: 2rem;
+    font-weight: normal;
+    background-color: #eee;
+}
+.inner{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    background-color: #fff;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+.dropload-box{
+    position: relative;
+    height: 0;
+    overflow: hidden;
+    background-color: red;
+    -webkit-transform:translate3d(0,0,0);
+    transform:translate3d(0,0,0);
+}
+.dropload-refresh,.dropload-update,.dropload-load{
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    height: 50px;
+    line-height: 50px;
+    color: #fff;
+    -webkit-transform:translate(-50%,0);
+    transform:translate(-50%,0);
+}
+.dropload-refresh_down,.dropload-update_down,.dropload-load_down{
+    position: absolute;
+    left: 50%;
+    top: 0;
+    height: 40px;
+    line-height: 40px;
+    color: #000;
+    -webkit-transform:translate(-50%,0);
+    transform:translate(-50%,0);
+}
+.inner .item{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align:center;
+    -webkit-box-align:center;
+    box-align:center;
+    -webkit-align-items:center;
+    align-items:center;
+    padding:10px 3.125%;
+    border-bottom: 1px solid #ccc;
+}
+.inner .item img{
+    display: block;
+    width: 40px;
+    height: 40px;
+    border:1px solid #ccc;
+}
+.inner .item .text{
+    display: block;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    width: 100%;
+    max-height: 40px;
+    overflow: hidden;
+    line-height: 20px;
+    margin: 0 10px;
+    color: #333;
+}
+.inner .item .date{
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    color: #999;
+}
+</style>
+</head>
+<body>
+<div class="outer">
+    <h1 class="header">头部</h1>
+    <div class="inner">
+        <div class="lists">
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">1文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">2文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">3文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">4文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">5文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">6文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">7文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">8文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">9文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">10文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">11文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+            <div class="item">
+                <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_200x200.jpg" alt="">
+                <a href="//www.baidu.com/" class="text">12文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</a>
+                <span class="date">2014-14-14</span>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="zepto.min.js"></script>
+<script src="../dist/dropload.min.js"></script>
+<script>
+$('.inner').dropload().on('dropload',function(e,me){
+    setTimeout(function(){
+        me.resetload();
+    },2000);
+});
+</script>
+</body>
+</html>

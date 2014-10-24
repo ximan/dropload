@@ -1,0 +1,27 @@
+{
+  "name": "dropload",
+  "version": "0.1.0",
+  "homepage": "https://github.com/ximan/dropload",
+  "authors": [
+    "ximan"
+  ],
+  "description": "移动端下拉刷新（基于Zepto/jQuery）",
+  "main": "dist/dropload.min.js",
+  "keywords": [
+    "jquery",
+    "zepto",
+    "dropload",
+    "drop",
+    "drag",
+    "load"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "examples",
+    ".gitignore",
+    "README.md"
+  ]
+}
