@@ -1,170 +1,188 @@
 /**
  * dropload
  * 西门
- * 20141024 v0.1.0
+ * 0.2.0(150325)
  */
 
 ;(function($){
     'use strict';
-    var args = {
-            loadClass : 'dropload-box',                                     // 下拉容器class
-            refreshDOM : '<div class="dropload-refresh">↓下拉刷新</div>',    // 下拉DOM
-            updateDOM : '<div class="dropload-update">↑释放更新</div>',      // 更新DOM
-            loadDOM : '<div class="dropload-load">○加载中...</div>',         // 加载DOM
-            direction : 'up',                                               // 加载内容方向
-            distance : 50                                                   // 下拉距离
-        },
-        _startY = 0,
-        _moveY = 0,
-        _curY = 0,
-        _offsetY = 0,
-        _loadHeight = 0,
-        _childrenHeight = 0,
-        _scrollTop = 0,
-        insertDOM = false,
-        loading = false,
-        loadName = '';
     $.fn.dropload = function(options){
-        new MyDropLoad(this, options);
-        return this;
+        return new MyDropLoad(this, options);
     };
     var MyDropLoad = function(element, options){
         var me = this;
         me.$element = $(element);
-        me.init(element, options);
+        me.insertDOM = false;
+        me.loading = false;
+        me.init(options);
     };
 
     // 初始化
-    MyDropLoad.prototype.init = function(element, options){
+    MyDropLoad.prototype.init = function(options){
         var me = this;
-        me.options = $.extend({}, args, options);
-        loadName = '.'+me.options.loadClass;
+        me.opts = $.extend({}, {
+            domUp : {                                                            // 上方DOM
+                domClass   : 'dropload-up',
+                domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+                domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+                domLoad    : '<div class="dropload-load">○加载中...</div>'
+            },
+            domDown : {                                                          // 下方DOM
+                domClass   : 'dropload-down',
+                domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+                domUpdate  : '<div class="dropload-update">↓释放加载</div>',
+                domLoad    : '<div class="dropload-load">○加载中...</div>'
+            },
+            distance : 50,                                                       // 拉动距离
+            loadUpFn : '',                                                       // 上方function
+            loadDownFn : ''                                                      // 下方function
+        }, options);
+
         // 绑定触摸
-        me.$element.on('touchstart',function(e){
-            if(loading){
-                return;
-            }
-            me.fnTouches(e);
-            me.fnTouchstart(e);
-        });
-        me.$element.on('touchmove',function(e){
-            if(loading){
-                return;
-            }
-            me.fnTouches(e);
-            me.fnTouchmove(e);
-        });
-        me.$element.on('touchend',function(){
-            if(loading){
-                return;
-            }
-            me.fnTouchend();
-        });
+        if(!me.loading){
+            me.$element.on('touchstart',function(e){
+                fnTouches(e);
+                fnTouchstart(e, me);
+            });
+            me.$element.on('touchmove',function(e){
+                fnTouches(e, me);
+                fnTouchmove(e, me);
+            });
+            me.$element.on('touchend',function(){
+                fnTouchend(me);
+            });
+        }
     };
 
     // touches
-    MyDropLoad.prototype.fnTouches = function(e){
+    function fnTouches(e){
         if(!e.touches){
             e.touches = e.originalEvent.touches;
         }
-    };
+    }
 
     // touchstart
-    MyDropLoad.prototype.fnTouchstart = function(e){
-        var me = this;
-        _startY = e.touches[0].pageY;
-        _loadHeight = me.$element.height();
-        _childrenHeight = me.$element.children().height();
-        _scrollTop = me.$element.scrollTop();
-    };
+    function fnTouchstart(e, me){
+        me._startY = e.touches[0].pageY;
+        me._loadHeight = me.$element.height();
+        me._childrenHeight = me.$element.children().height();
+        me._scrollTop = me.$element.scrollTop();
+    }
 
     // touchmove
-    MyDropLoad.prototype.fnTouchmove = function(e){
-        _curY = e.touches[0].pageY;
-        _moveY = _curY - _startY;
-        var me = this,
-            _absMoveY = Math.abs(_moveY);
-        // 加载上放
-        if(me.options.direction == 'up' && _scrollTop <= 0 && _moveY > 0){
+    function fnTouchmove(e, me){
+        me._curY = e.touches[0].pageY;
+        me._moveY = me._curY - me._startY;
+
+        if(me._moveY > 0){
+            me.direction = 'down';
+        }else if(me._moveY < 0){
+            me.direction = 'up';
+        }
+
+        var _absMoveY = Math.abs(me._moveY);
+
+        // 加载上方
+        if(me.opts.loadUpFn != '' && me._scrollTop <= 0 && me.direction == 'down'){
             e.preventDefault();
-            if(!insertDOM){
-                me.$element.prepend('<div class="'+me.options.loadClass+'"></div>');
-                insertDOM = true;
+            if(!me.insertDOM){
+                me.$element.prepend('<div class="'+me.opts.domUp.domClass+'"></div>');
+                me.insertDOM = true;
             }
-            fnTransition($(loadName),0);
+
+            me.$domUp = $('.'+me.opts.domUp.domClass);
+            fnTransition(me.$domUp,0);
+
             // 下拉
-            if(_absMoveY <= me.options.distance){
-                _offsetY = _absMoveY;
-                $(loadName).html('').append(me.options.refreshDOM);
+            if(_absMoveY <= me.opts.distance){
+                me._offsetY = _absMoveY;
+                me.$domUp.html('').append(me.opts.domUp.domRefresh);
             // 指定距离 < 下拉距离 < 指定距离*2
-            }else if(_absMoveY > me.options.distance && _absMoveY <= me.options.distance*2){
-                _offsetY = me.options.distance+(_absMoveY-me.options.distance)*0.5;
-                $(loadName).html('').append(me.options.updateDOM);
+            }else if(_absMoveY > me.opts.distance && _absMoveY <= me.opts.distance*2){
+                me._offsetY = me.opts.distance+(_absMoveY-me.opts.distance)*0.5;
+                me.$domUp.html('').append(me.opts.domUp.domUpdate);
             // 下拉距离 > 指定距离*2
             }else{
-                _offsetY = me.options.distance+me.options.distance*0.5+(_absMoveY-me.options.distance*2)*0.2;
+                me._offsetY = me.opts.distance+me.opts.distance*0.5+(_absMoveY-me.opts.distance*2)*0.2;
             }
-            $(loadName).css({'height': _offsetY});
+
+            me.$domUp.css({'height': me._offsetY});
         }
+
         // 加载下方
-        if(me.options.direction == 'down' && _childrenHeight <= (_loadHeight+_scrollTop) && _moveY < 0){
+        if(me.opts.loadDownFn != '' && me._childrenHeight <= (me._loadHeight+me._scrollTop) && me.direction == 'up'){
             e.preventDefault();
-            if(!insertDOM){
-                me.$element.append('<div class="'+me.options.loadClass+'"></div>');
-                insertDOM = true;
+            if(!me.insertDOM){
+                me.$element.append('<div class="'+me.opts.domDown.domClass+'"></div>');
+                me.insertDOM = true;
             }
-            fnTransition($(loadName),0);
-            // 下拉
-            if(_absMoveY <= me.options.distance){
-                _offsetY = _absMoveY;
-                $(loadName).html('').append(me.options.refreshDOM);
-            // 指定距离 < 下拉距离 < 指定距离*2
-            }else if(_absMoveY > me.options.distance && _absMoveY <= me.options.distance*2){
-                _offsetY = me.options.distance+(_absMoveY-me.options.distance)*0.5;
-                $(loadName).html('').append(me.options.updateDOM);
-            // 下拉距离 > 指定距离*2
+
+            me.$domDown = $('.'+me.opts.domDown.domClass);
+            fnTransition(me.$domDown,0);
+
+            // 上拉
+            if(_absMoveY <= me.opts.distance){
+                me._offsetY = _absMoveY;
+                me.$domDown.html('').append(me.opts.domDown.domRefresh);
+            // 指定距离 < 上拉距离 < 指定距离*2
+            }else if(_absMoveY > me.opts.distance && _absMoveY <= me.opts.distance*2){
+                me._offsetY = me.opts.distance+(_absMoveY-me.opts.distance)*0.5;
+                me.$domDown.html('').append(me.opts.domDown.domUpdate);
+            // 上拉距离 > 指定距离*2
             }else{
-                _offsetY = me.options.distance+me.options.distance*0.5+(_absMoveY-me.options.distance*2)*0.2;
+                me._offsetY = me.opts.distance+me.opts.distance*0.5+(_absMoveY-me.opts.distance*2)*0.2;
             }
-            $(loadName).css({'height': _offsetY});
-            me.$element.scrollTop(_offsetY+_scrollTop);
+
+            me.$domDown.css({'height': me._offsetY});
+            me.$element.scrollTop(me._offsetY+me._scrollTop);
         }
-    };
+    }
 
     // touchend
-    MyDropLoad.prototype.fnTouchend = function(){
-        var me = this,
-            _absMoveY = Math.abs(_moveY);
-        if(insertDOM){
-            fnTransition($(loadName),300);
-            if(_absMoveY > me.options.distance){
-                $(loadName).css({'height':$(loadName).children().height()});
-                $(loadName).html('').append(me.options.loadDOM);
-                me.fnCallback();
+    function fnTouchend(me){
+        var _absMoveY = Math.abs(me._moveY);
+        if(me.insertDOM){
+            if(me.direction == 'down'){
+                me.$domResult = me.$domUp;
+                me.domLoad = me.opts.domUp.domLoad;
+            }else if(me.direction == 'up'){
+                me.$domResult = me.$domDown;
+                me.domLoad = me.opts.domDown.domLoad;
+            }
+
+            fnTransition(me.$domResult,300);
+
+            if(_absMoveY > me.opts.distance){
+                me.$domResult.css({'height':me.$domResult.children().height()});
+                me.$domResult.html('').append(me.domLoad);
+                fnCallback(me);
             }else{
-                $(loadName).css({'height':'0'}).on('webkitTransitionEnd',function(){
-                    insertDOM = false;
+                me.$domResult.css({'height':'0'}).on('webkitTransitionEnd',function(){
+                    me.insertDOM = false;
                     $(this).remove();
                 });
             }
-            _moveY = 0;
+            me._moveY = 0;
         }
-    };
+    }
 
     // 回调
-    MyDropLoad.prototype.fnCallback = function(){
-        var me = this;
-        loading = true;
-        me.$element.trigger('dropload',me);
-    };
+    function fnCallback(me){
+        me.loading = true;
+        if(me.opts.loadUpFn != '' && me.direction == 'down'){
+            me.opts.loadUpFn(me);
+        }else if(me.opts.loadDownFn != '' && me.direction == 'up'){
+            me.opts.loadDownFn(me);
+        }
+    }
 
     // 重置
     MyDropLoad.prototype.resetload = function(){
         var me = this;
-        if($(loadName)){
-            $(loadName).css({'height':'0'}).on('webkitTransitionEnd',function(){
-                loading = false;
-                insertDOM = false;
+        if(!!me.$domResult){
+            me.$domResult.css({'height':'0'}).on('webkitTransitionEnd',function(){
+                me.loading = false;
+                me.insertDOM = false;
                 $(this).remove();
             });
         }
