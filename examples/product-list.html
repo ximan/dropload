@@ -34,13 +34,31 @@ body{
     flex-direction:column;
 }
 .header{
+    position: relative;
     height: 44px;
     line-height: 44px;
-    text-align: center;
     border-bottom: 1px solid #ccc;
+    background-color: #eee;
+}
+.header h1{
+    text-align: center;
     font-size: 2rem;
     font-weight: normal;
-    background-color: #eee;
+}
+.header .btn{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 4em;
+    height: 100%;
+    text-align: center;
+    color: #06c;
+    font-size: 1.4rem;
+    background-color: #ccc;
+}
+.header .btn:active{
+    background-color: #aaa;
+    color: #fff;
 }
 .inner{
     -webkit-box-flex: 1;
@@ -169,7 +187,10 @@ body{
 </head>
 <body>
 <div class="outer">
-    <h1 class="header">头部</h1>
+    <div class="header">
+        <h1>头部</h1>
+        <a href="javascript:;" class="btn lock">锁定</a>
+    </div>
     <div class="inner">
         <div class="lists">
             <a class="item">
@@ -238,7 +259,24 @@ body{
 <script src="js/zepto.min.js"></script>
 <script src="../dist/dropload.min.js"></script>
 <script>
-$('.inner').dropload({
+// 按钮操作
+$('.header .btn').on('click',function(){
+    var $this = $(this);
+    if(!!$this.hasClass('lock')){
+        $this.attr('class','btn unlock');
+        $this.text('解锁');
+        // 锁定
+        dropload.lock();
+    }else{
+        $this.attr('class','btn lock');
+        $this.text('锁定');
+        // 解锁
+        dropload.unlock();
+    }
+});
+
+// dropload
+var dropload = $('.inner').dropload({
     domUp : {
         domClass   : 'dropload-up',
         domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',

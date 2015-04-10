@@ -4,6 +4,10 @@
 
 ## 背景介绍
 
+### 0.3.0(150410)
+
+项目中通知列表有可编辑、删除等状态，需要锁定和解锁下拉刷新功能。
+
 ### 0.2.0(150325)
 
 公司项目APP内嵌页需要下拉刷新，终于可以实战了！这一版大家可以开始使用和反馈。
@@ -72,11 +76,19 @@ CSS样式请自行美化
 | loadUpFn   | 上方function | 空  | function(me){<br/>//你的代码<br/>me.resetload();<br/>} |
 | loadDownFn | 下方function | 空  | function(me){<br/>//你的代码<br/>me.resetload();<br/>} |
 
+## API
+
+暴露一些功能，可以让dropload更灵活的使用
+
+`lock()` 锁定dropload
+
+`unlock()` 解锁dropload
 
 ## 最新版本
 
-### 0.2.0(150325)
+### 0.3.0(150410)
 
-* 修改参数domUp、domDown，增加参数loadUpFn、loadDownFn，删除参数direction
+* 增加`lock()` 和`unlock()` API
+* 修复拉动加载时还可拉动bug
 
 [所有更新日志](Changelog.md)

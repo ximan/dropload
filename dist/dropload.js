@@ -1,7 +1,7 @@
 /**
  * dropload
  * 西门
- * 0.2.0(150325)
+ * 0.3.0(150410)
  */
 
 ;(function($){
@@ -14,6 +14,7 @@
         me.$element = $(element);
         me.insertDOM = false;
         me.loading = false;
+        me.isLock = false;
         me.init(options);
     };
 
@@ -39,19 +40,23 @@
         }, options);
 
         // 绑定触摸
-        if(!me.loading){
-            me.$element.on('touchstart',function(e){
+        me.$element.on('touchstart',function(e){
+            if(!me.loading && !me.isLock){
                 fnTouches(e);
                 fnTouchstart(e, me);
-            });
-            me.$element.on('touchmove',function(e){
+            }
+        });
+        me.$element.on('touchmove',function(e){
+            if(!me.loading && !me.isLock){
                 fnTouches(e, me);
                 fnTouchmove(e, me);
-            });
-            me.$element.on('touchend',function(){
+            }
+        });
+        me.$element.on('touchend',function(){
+            if(!me.loading && !me.isLock){
                 fnTouchend(me);
-            });
-        }
+            }
+        });
     };
 
     // touches
@@ -175,6 +180,18 @@
             me.opts.loadDownFn(me);
         }
     }
+
+    // 锁定
+    MyDropLoad.prototype.lock = function(){
+        var me = this;
+        me.isLock = true;
+    };
+
+    // 解锁
+    MyDropLoad.prototype.unlock = function(){
+        var me = this;
+        me.isLock = false;
+    };
 
     // 重置
     MyDropLoad.prototype.resetload = function(){
