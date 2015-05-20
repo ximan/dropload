@@ -114,6 +114,16 @@
             me.$domUp.css({'height': me._offsetY});
         }
 
+
+        /*
+        因为scroll事件在touchend事件之后触发，所以如果不在如下情况做处理的话，
+        上面的事件执行完之后touchendme.insertDOM = true，当手指离开屏幕，touchend事件触发会有问题
+        */
+        if(me.opts.loadUpFn != '' && me._scrollTop <= 0 && me.direction == 'up'){
+            me.insertDOM = false;
+            me.$domUp.remove();
+        }
+
         // 加载下方
         if(me.opts.loadDownFn != '' && me._childrenHeight <= (me._loadHeight+me._scrollTop) && me.direction == 'up'){
             e.preventDefault();
