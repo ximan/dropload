@@ -3,187 +3,134 @@
 <head>
     <meta name="viewport" content="initial-scale=1, user-scalable=0, minimal-ui" charset="UTF-8">
     <title>下拉刷新</title>
-<style>
-*{
-    margin: 0;
-    padding:0;
-    -webkit-tap-highlight-color:rgba(0,0,0,0);
-    -webkit-text-size-adjust:none;
-}
-html{
-    font-size:10px;
-}
-body{
-    background-color: #f5f5f5;
-    font-size: 1.2em;
-}
-.outer{
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction:column;
-    -webkit-box-orient:vertical;
-    box-orient:vertical;
-    -webkit-flex-direction:column;
-    flex-direction:column;
-}
-.header{
-    position: relative;
-    height: 44px;
-    line-height: 44px;
-    border-bottom: 1px solid #ccc;
-    background-color: #eee;
-}
-.header h1{
-    text-align: center;
-    font-size: 2rem;
-    font-weight: normal;
-}
-.header .btn{
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 4em;
-    height: 100%;
-    text-align: center;
-    color: #06c;
-    font-size: 1.4rem;
-    background-color: #ccc;
-}
-.header .btn:active{
-    background-color: #aaa;
-    color: #fff;
-}
-.inner{
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-    background-color: #fff;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-}
-.inner .item{
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-align:center;
-    -webkit-box-align:center;
-    box-align:center;
-    -webkit-align-items:center;
-    align-items:center;
-    padding:3.125%;
-    border-bottom: 1px solid #ddd;
-    color: #333;
-}
-.inner .item img{
-    display: block;
-    width: 40px;
-    height: 40px;
-    border:1px solid #ddd;
-}
-.inner .item h3{
-    display: block;
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-    width: 100%;
-    max-height: 40px;
-    overflow: hidden;
-    line-height: 20px;
-    margin: 0 10px;
-    font-size: 1.2rem;
-}
-.inner .item .date{
-    display: block;
-    height: 20px;
-    line-height: 20px;
-    color: #999;
-}
-.opacity{
-    -webkit-animation: opacity 0.5s linear;
-    animation: opacity 0.5s linear;
-}
-@-webkit-keyframes opacity {
-    0% {
-        opacity:0;
+    <style>
+    *{
+        margin: 0;
+        padding:0;
+        -webkit-tap-highlight-color:rgba(0,0,0,0);
+        -webkit-text-size-adjust:none;
     }
-    100% {
-        opacity:1;
+    html{
+        font-size:10px;
     }
-}
-@keyframes opacity {
-    0% {
-        opacity:0;
+    body{
+        background-color: #f5f5f5;
+        font-size: 1.2em;
     }
-    100% {
-        opacity:1;
+    .outer{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction:column;
+        -webkit-box-orient:vertical;
+        box-orient:vertical;
+        -webkit-flex-direction:column;
+        flex-direction:column;
     }
-}
-
-/* dropload */
-.dropload-up,.dropload-down{
-    position: relative;
-    height: 0;
-    overflow: hidden;
-    -webkit-transform:translate3d(0,0,0);
-    transform:translate3d(0,0,0);
-}
-.dropload-refresh,.dropload-update,.dropload-load{
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    -webkit-transform:translate(-50%,0);
-    transform:translate(-50%,0);
-}
-.dropload-load .loading{
-    display: inline-block;
-    height: 15px;
-    width: 15px;
-    border-radius: 100%;
-    margin: 6px;
-    border: 2px solid #666;
-    border-bottom-color: transparent;
-    vertical-align: middle;
-    -webkit-animation: rotate 0.75s 0 linear infinite;
-    animation: rotate 0.75s 0 linear infinite;
-}
-@-webkit-keyframes rotate {
-    0% {
-        -webkit-transform: rotate(0deg);
+    .header{
+        position: relative;
+        height: 44px;
+        line-height: 44px;
+        border-bottom: 1px solid #ccc;
+        background-color: #eee;
     }
-    50% {
-        -webkit-transform: rotate(180deg);
+    .header h1{
+        text-align: center;
+        font-size: 2rem;
+        font-weight: normal;
     }
-    100% {
-        -webkit-transform: rotate(360deg);
+    .header .btn{
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 4em;
+        height: 100%;
+        text-align: center;
+        color: #06c;
+        font-size: 1.4rem;
+        background-color: #ccc;
     }
-}
-@keyframes rotate {
-    0% {
-        transform: rotate(0deg);
+    .header .btn:active{
+        background-color: #aaa;
+        color: #fff;
     }
-    50% {
-        transform: rotate(180deg);
+    .inner{
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        background-color: #fff;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
     }
-    100% {
-        transform: rotate(360deg);
+    .inner .item{
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align:center;
+        -webkit-box-align:center;
+        box-align:center;
+        -webkit-align-items:center;
+        align-items:center;
+        padding:3.125%;
+        border-bottom: 1px solid #ddd;
+        color: #333;
+        text-decoration: none;
     }
-}
-
-</style>
+    .inner .item img{
+        display: block;
+        width: 40px;
+        height: 40px;
+        border:1px solid #ddd;
+    }
+    .inner .item h3{
+        display: block;
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        width: 100%;
+        max-height: 40px;
+        overflow: hidden;
+        line-height: 20px;
+        margin: 0 10px;
+        font-size: 1.2rem;
+    }
+    .inner .item .date{
+        display: block;
+        height: 20px;
+        line-height: 20px;
+        color: #999;
+    }
+    .opacity{
+        -webkit-animation: opacity 0.5s linear;
+        animation: opacity 0.5s linear;
+    }
+    @-webkit-keyframes opacity {
+        0% {
+            opacity:0;
+        }
+        100% {
+            opacity:1;
+        }
+    }
+    @keyframes opacity {
+        0% {
+            opacity:0;
+        }
+        100% {
+            opacity:1;
+        }
+    }
+    </style>
+    <link rel="stylesheet" href="../dist/dropload.min.css">
 </head>
 <body>
 <div class="outer">
@@ -193,62 +140,62 @@ body{
     </div>
     <div class="inner">
         <div class="lists">
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>1文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>2文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>3文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>4文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>5文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>6文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>7文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>8文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>9文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>10文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>11文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
             </a>
-            <a class="item">
+            <a class="item" href="#">
                 <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
                 <h3>12文字描述文字描述文字描述文字描述文字描述</h3>
                 <span class="date">2014-14-14</span>
@@ -297,9 +244,9 @@ var dropload = $('.inner').dropload({
             success: function(data){
                 var result = '';
                 for(var i = 0; i < data.lists.length; i++){
-                    result +=   '<a class="item opacity">'
+                    result +=   '<a class="item opacity" href="'+data.lists[i].link+'">'
                                     +'<img src="'+data.lists[i].pic+'" alt="">'
-                                    +'<h3 href="'+data.lists[i].link+'" >'+data.lists[i].title+'</h3>'
+                                    +'<h3>'+data.lists[i].title+'</h3>'
                                     +'<span class="date">'+data.lists[i].date+'</span>'
                                 +'</a>';
                 }
@@ -324,9 +271,9 @@ var dropload = $('.inner').dropload({
             success: function(data){
                 var result = '';
                 for(var i = 0; i < data.lists.length; i++){
-                    result +=   '<a class="item opacity">'
+                    result +=   '<a class="item opacity" href="'+data.lists[i].link+'">'
                                     +'<img src="'+data.lists[i].pic+'" alt="">'
-                                    +'<h3 href="'+data.lists[i].link+'" >'+data.lists[i].title+'</h3>'
+                                    +'<h3>'+data.lists[i].title+'</h3>'
                                     +'<span class="date">'+data.lists[i].date+'</span>'
                                 +'</a>';
                 }
