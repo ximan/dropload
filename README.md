@@ -90,3 +90,7 @@ $('.element').dropload({
 * 修复未滑动到底部就加载bug
 
 [所有更新日志](Changelog.md)
+
+## dropload使用交流群
+
+[群号：290725368，点击加群](http://shang.qq.com/wpa/qunwpa?idkey=2c58606fdfb5d6be4021a678e1506fdbbbc480aabdca0eeb115c2f4ff5bc69ee)
