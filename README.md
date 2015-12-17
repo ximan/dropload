@@ -69,7 +69,7 @@ $('.element').dropload({
 });
 ````
 
-进阶用法详见上面[DEMO3，固定布局，加载顶部、底部](http://ximan.github.io/dropload/examples/product-list.html)
+进阶用法详见上面DEMO2，DEMO3
 
 ## 参数列表
 
