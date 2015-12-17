@@ -2,7 +2,7 @@
 <html lang="zh-cn">
 <head>
     <meta name="viewport" content="initial-scale=1, user-scalable=0, minimal-ui" charset="UTF-8">
-    <title>下拉刷新</title>
+    <title>固定布局，加载顶部、底部</title>
     <style>
     *{
         margin: 0;
@@ -130,13 +130,17 @@
         }
     }
     </style>
-    <link rel="stylesheet" href="../dist/dropload.min.css">
+    <link rel="stylesheet" href="../dist/dropload.css">
 </head>
 <body>
 <div class="outer">
     <div class="header">
         <h1>头部</h1>
         <a href="javascript:;" class="btn lock">锁定</a>
+        <div class="footer" style="position:absolute;left:0;top:0;background-color:#fff;">
+            <a href=""></a>
+            <a href="#"></a>
+        </div>
     </div>
     <div class="inner">
         <div class="lists">
@@ -203,92 +207,100 @@
         </div>
     </div>
 </div>
+<!-- jQuery1.7以上 或者 Zepto 二选一，不要同时都引用 -->
 <script src="js/zepto.min.js"></script>
 <script src="../dist/dropload.min.js"></script>
 <script>
-// 按钮操作
-$('.header .btn').on('click',function(){
-    var $this = $(this);
-    if(!!$this.hasClass('lock')){
-        $this.attr('class','btn unlock');
-        $this.text('解锁');
-        // 锁定
-        dropload.lock();
-    }else{
-        $this.attr('class','btn lock');
-        $this.text('锁定');
-        // 解锁
-        dropload.unlock();
-    }
-});
+$(function(){
+    // 按钮操作
+    $('.header .btn').on('click',function(){
+        var $this = $(this);
+        if(!!$this.hasClass('lock')){
+            $this.attr('class','btn unlock');
+            $this.text('解锁');
+            // 锁定
+            dropload.lock();
+            $('.dropload-down').hide();
+        }else{
+            $this.attr('class','btn lock');
+            $this.text('锁定');
+            // 解锁
+            dropload.unlock();
+            $('.dropload-down').show();
+        }
+    });
 
-// dropload
-var dropload = $('.inner').dropload({
-    domUp : {
-        domClass   : 'dropload-up',
-        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
-        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
-        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
-    },
-    domDown : {
-        domClass   : 'dropload-down',
-        domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
-        domUpdate  : '<div class="dropload-update">↓释放加载</div>',
-        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
-    },
-    loadUpFn : function(me){
-        $.ajax({
-            type: 'GET',
-            url: 'json/update.json',
-            dataType: 'json',
-            success: function(data){
-                var result = '';
-                for(var i = 0; i < data.lists.length; i++){
-                    result +=   '<a class="item opacity" href="'+data.lists[i].link+'">'
-                                    +'<img src="'+data.lists[i].pic+'" alt="">'
-                                    +'<h3>'+data.lists[i].title+'</h3>'
-                                    +'<span class="date">'+data.lists[i].date+'</span>'
-                                +'</a>';
+    // dropload
+    var dropload = $('.inner').dropload({
+        domUp : {
+            domClass   : 'dropload-up',
+            domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+            domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+            domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+        },
+        domDown : {
+            domClass   : 'dropload-down',
+            domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+            domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+            domNoData  : '<div class="dropload-noData">暂无数据</div>'
+        },
+        loadUpFn : function(me){
+            $.ajax({
+                type: 'GET',
+                url: 'json/update.json',
+                dataType: 'json',
+                success: function(data){
+                    var result = '';
+                    for(var i = 0; i < data.lists.length; i++){
+                        result +=   '<a class="item opacity" href="'+data.lists[i].link+'">'
+                                        +'<img src="'+data.lists[i].pic+'" alt="">'
+                                        +'<h3>'+data.lists[i].title+'</h3>'
+                                        +'<span class="date">'+data.lists[i].date+'</span>'
+                                    +'</a>';
+                    }
+                    // 为了测试，延迟1秒加载
+                    setTimeout(function(){
+                        $('.lists').html(result);
+                        // 每次数据加载完，必须重置
+                        dropload.resetload();
+                    },1000);
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                    // 即使加载出错，也得重置
+                    dropload.resetload();
                 }
-                // 为了测试，延迟1秒加载
-                setTimeout(function(){
-                    $('.lists').html('');
-                    $('.lists').prepend(result);
-                    me.resetload();
-                },1000);
-            },
-            error: function(xhr, type){
-                alert('Ajax error!');
-                me.resetload();
-            }
-        });
-    },
-    loadDownFn : function(me){
-        $.ajax({
-            type: 'GET',
-            url: 'json/more.json',
-            dataType: 'json',
-            success: function(data){
-                var result = '';
-                for(var i = 0; i < data.lists.length; i++){
-                    result +=   '<a class="item opacity" href="'+data.lists[i].link+'">'
-                                    +'<img src="'+data.lists[i].pic+'" alt="">'
-                                    +'<h3>'+data.lists[i].title+'</h3>'
-                                    +'<span class="date">'+data.lists[i].date+'</span>'
-                                +'</a>';
+            });
+        },
+        loadDownFn : function(me){
+            $.ajax({
+                type: 'GET',
+                url: 'json/more.json',
+                dataType: 'json',
+                success: function(data){
+                    var result = '';
+                    for(var i = 0; i < data.lists.length; i++){
+                        result +=   '<a class="item opacity" href="'+data.lists[i].link+'">'
+                                        +'<img src="'+data.lists[i].pic+'" alt="">'
+                                        +'<h3>'+data.lists[i].title+'</h3>'
+                                        +'<span class="date">'+data.lists[i].date+'</span>'
+                                    +'</a>';
+                    }
+                    // 为了测试，延迟1秒加载
+                    setTimeout(function(){
+                        $('.lists').append(result);
+                        // 每次数据加载完，必须重置
+                        dropload.resetload();
+                    },1000);
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                    // 即使加载出错，也得重置
+                    dropload.resetload();
                 }
-                // 为了测试，延迟1秒加载
-                setTimeout(function(){
-                    $('.lists').append(result);
-                    me.resetload();
-                },1000);
-            },
-            error: function(xhr, type){
-                alert('Ajax error!');
-                me.resetload();
-            }
-        });
-    }
+            });
+        }
+    });
 });
 </script>
 </body>

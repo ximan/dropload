@@ -2,7 +2,7 @@
 <html lang="zh-cn">
 <head>
     <meta name="viewport" content="initial-scale=1, user-scalable=0, minimal-ui" charset="UTF-8">
-    <title>下拉刷新</title>
+    <title>加载底部</title>
     <style>
     *{
         margin: 0;
@@ -28,10 +28,10 @@
         font-size: 2rem;
         font-weight: normal;
     }
-    .inner{
-        padding-bottom: 40px;
+    .content{
+        background-color: #fff;
     }
-    .inner .item{
+    .content .item{
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -46,13 +46,13 @@
         color: #333;
         text-decoration: none;
     }
-    .inner .item img{
+    .content .item img{
         display: block;
         width: 40px;
         height: 40px;
         border:1px solid #ddd;
     }
-    .inner .item h3{
+    .content .item h3{
         display: block;
         -webkit-box-flex: 1;
         -webkit-flex: 1;
@@ -65,7 +65,7 @@
         margin: 0 10px;
         font-size: 1.2rem;
     }
-    .inner .item .date{
+    .content .item .date{
         display: block;
         height: 20px;
         line-height: 20px;
@@ -91,50 +91,14 @@
             opacity:1;
         }
     }
-    .footer{
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        width: 100%;
-        height: 40px;
-    }
-    .footer a{
-        position: relative;
-        display: block;
-        -webkit-box-flex: 1;
-        -webkit-flex: 1;
-        -ms-flex: 1;
-        flex: 1;
-        line-height: 40px;
-        text-align: center;
-        color: #666;
-        background-color: #eee;
-        text-decoration: none;
-    }
-    .footer a:before{
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 10px;
-        width: 1px;
-        height: 20px;
-        background-color: #ccc;
-    }
-    .footer a:first-child:before{
-        display: none;
-    }
     </style>
-    <link rel="stylesheet" href="../dist/dropload.min.css">
+    <link rel="stylesheet" href="../dist/dropload.css">
 </head>
 <body>
 <div class="header">
     <h1>就当我是新闻页吧</h1>
 </div>
-<div class="inner">
+<div class="content">
     <div class="lists">
         <a class="item" href="#">
             <img src="http://d6.yihaodianimg.com/N02/M0B/81/5A/CgQCsVMhX_mAAvXsAAJDE3K2zh485900_80x80.jpg" alt="">
@@ -198,44 +162,59 @@
         </a>
     </div>
 </div>
-<div class="footer">
-    <a href="#1" class="item">菜单一</a>
-    <a href="#2" class="item">菜单二</a>
-    <a href="#3" class="item">菜单三</a>
-    <a href="#4" class="item">菜单四</a>
-</div>
+<!-- jQuery1.7以上 或者 Zepto 二选一，不要同时都引用 -->
 <script src="js/zepto.min.js"></script>
 <script src="../dist/dropload.min.js"></script>
 <script>
-// dropload
-$('.inner').dropload({
-    scrollArea : window,
-    loadDownFn : function(me){
-        $.ajax({
-            type: 'GET',
-            url: 'json/more.json',
-            dataType: 'json',
-            success: function(data){
-                var result = '';
-                for(var i = 0; i < data.lists.length; i++){
-                    result +=   '<a class="item opacity" href="'+data.lists[i].link+'">'
-                                    +'<img src="'+data.lists[i].pic+'" alt="">'
-                                    +'<h3>'+data.lists[i].title+'</h3>'
-                                    +'<span class="date">'+data.lists[i].date+'</span>'
-                                +'</a>';
-                }
-                // 为了测试，延迟1秒加载
-                setTimeout(function(){
-                    $('.lists').append(result);
+$(function(){
+    var counter = 0;
+    // 每页展示4个
+    var num = 4;
+    var pageStart = 0,pageEnd = 0;
+
+    // dropload
+    $('.content').dropload({
+        scrollArea : window,
+        loadDownFn : function(me){
+            $.ajax({
+                type: 'GET',
+                url: 'json/more.json',
+                dataType: 'json',
+                success: function(data){
+                    var result = '';
+                    counter++;
+                    pageEnd = num * counter;
+                    pageStart = pageEnd - num;
+
+                    for(var i = pageStart; i < pageEnd; i++){
+                        result +=   '<a class="item opacity" href="'+data.lists[i].link+'">'
+                                        +'<img src="'+data.lists[i].pic+'" alt="">'
+                                        +'<h3>'+data.lists[i].title+'</h3>'
+                                        +'<span class="date">'+data.lists[i].date+'</span>'
+                                    +'</a>';
+                        if((i + 1) >= data.lists.length){
+                            // 锁定
+                            me.lock();
+                            // 无数据
+                            me.noData();
+                            break;
+                        }
+                    }
+                    // 为了测试，延迟1秒加载
+                    setTimeout(function(){
+                        $('.lists').append(result);
+                        // 每次数据加载完，必须重置
+                        me.resetload();
+                    },1000);
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                    // 即使加载出错，也得重置
                     me.resetload();
-                },1000);
-            },
-            error: function(xhr, type){
-                alert('Ajax error!');
-                me.resetload();
-            }
-        });
-    }
+                }
+            });
+        }
+    });
 });
 </script>
 </body>

@@ -2,23 +2,18 @@
     position: relative;
     height: 0;
     overflow: hidden;
-    -webkit-transform:translate3d(0,0,0);
-    transform:translate3d(0,0,0);
+    font-size: 12px;
+    /* 开启硬件加速 */
+    -webkit-transform:translateZ(0);
+    transform:translateZ(0);
 }
-.dropload-refresh,.dropload-update,.dropload-load{
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 100%;
+.dropload-down{
+    height: 50px;
+}
+.dropload-refresh,.dropload-update,.dropload-load,.dropload-noData{
     height: 50px;
     line-height: 50px;
     text-align: center;
-    -webkit-transform:translate(-50%,0);
-    transform:translate(-50%,0);
-}
-.dropload-down .dropload-refresh,.dropload-down .dropload-update,.dropload-down .dropload-load{
-    top: 0;
-    bottom: auto;
 }
 .dropload-load .loading{
     display: inline-block;

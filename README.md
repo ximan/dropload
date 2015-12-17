@@ -4,6 +4,10 @@
 
 ## 背景介绍
 
+### 0.5.0(151217)
+
+感谢交流群里网友各种吐槽上拉加载抖动。发现`touch`和`scroll`同时作用会发生抖动，干脆把上拉加载改为滑到底部自动加载。如依旧需要上拉加载效果，可以下载[releases0.4.0版本](https://github.com/ximan/dropload/releases/tag/0.4.0)。
+
 ### 0.4.0(150927)
 
 根据网友提供demo，修改至适用大部分普通列表网页，终于可以大规模使用啦！
@@ -22,21 +26,24 @@
 
 ## 示例
 
-![扫一扫](examples/news-list.png)
-[普通列表DEMO](http://ximan.github.io/dropload/examples/news-list.html)
+![扫一扫](examples/load-bottom.png)
+[DEMO1，加载底部](http://ximan.github.io/dropload/examples/load-bottom.html)
+
+![扫一扫](examples/load-top-bottom.png)
+[DEMO2，加载顶部、底部](http://ximan.github.io/dropload/examples/load-top-bottom.html)
 
 ![扫一扫](examples/product-list.png)
-[固定布局DEMO](http://ximan.github.io/dropload/examples/product-list.html)
+[DEMO3，固定布局，加载顶部、底部](http://ximan.github.io/dropload/examples/product-list.html)
 
 ## 依赖
 
-Zepto 或者 jQuery
+Zepto 或者 jQuery 1.7以上版本，推荐jQuery 2.x版本（二者不要同时引用）
 
 ## 使用方法
 
 引用css和js
 
-    <link rel="stylesheet" href="../dist/dropload.min.css">
+    <link rel="stylesheet" href="../dist/dropload.css">
     <script src="../dist/dropload.min.js"></script>
 
 ````
@@ -49,11 +56,12 @@ $('.element').dropload({
             dataType: 'json',
             success: function(data){
                 alert(data);
-                // 代码执行后必须重置
+                // 每次数据加载完，必须重置
                 me.resetload();
             },
             error: function(xhr, type){
                 alert('Ajax error!');
+                // 即使加载出错，也得重置
                 me.resetload();
             }
         });
@@ -61,7 +69,7 @@ $('.element').dropload({
 });
 ````
 
-进阶用法详见上面[固定布局DEMO](http://ximan.github.io/dropload/examples/product-list.html)
+进阶用法详见上面[DEMO3，固定布局，加载顶部、底部](http://ximan.github.io/dropload/examples/product-list.html)
 
 ## 参数列表
 
@@ -69,7 +77,7 @@ $('.element').dropload({
 |------------|-------------|--------|----------------|
 | scrollArea | 滑动区域      | 绑定元素自身 | window |
 | domUp      | 上方DOM      | {<br/>domClass : 'dropload-up',<br/>domRefresh : '&lt;div class="dropload-refresh"&gt;↓下拉刷新&lt;/div&gt;',<br/>domUpdate  : '&lt;div class="dropload-update"&gt;↑释放更新&lt;/div&gt;',<br/>domLoad : '&lt;div class="dropload-load"&gt;○加载中...&lt;/div&gt;'<br/>} | 数组 |
-| domDown    | 下方DOM      | {<br/>domClass : 'dropload-down',<br/>domRefresh : '&lt;div class="dropload-refresh"&gt;↑上拉加载更多&lt;/div&gt;',<br/>domUpdate  : '&lt;div class="dropload-update"&gt;↓释放加载&lt;/div&gt;',<br/>domLoad : '&lt;div class="dropload-load"&gt;○加载中...&lt;/div&gt;'<br/>}  | 数组 |
+| domDown    | 下方DOM      | {<br/>domClass : 'dropload-down',<br/>domRefresh : '&lt;div class="dropload-refresh"&gt;↑上拉加载更多&lt;/div&gt;',<br/>domLoad : '&lt;div class="dropload-load"&gt;○加载中...&lt;/div&gt;',<br/>domNoData : '&lt;div class="dropload-noData"&gt;暂无数据&lt;/div&gt;'<br/>}  | 数组 |
 | distance   | 拉动距离      | 50 | 数字 |
 | loadUpFn   | 上方function | 空  | function(me){<br/>//你的代码<br/>me.resetload();<br/>} |
 | loadDownFn | 下方function | 空  | function(me){<br/>//你的代码<br/>me.resetload();<br/>} |
@@ -82,12 +90,15 @@ $('.element').dropload({
 
 `unlock()` 解锁dropload
 
+`noData()` 无数据
+
 ## 最新版本
 
-### 0.4.0(150927)
+### 0.5.0(151217)
 
-* 增加参数scrollArea
-* 修复未滑动到底部就加载bug
+* 上拉加载改为滑到底部自动加载
+* 删除上拉加载中的↑释放更新
+* 增加无数据`me.noData()` API
 
 [所有更新日志](Changelog.md)
 
