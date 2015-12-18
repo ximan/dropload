@@ -4,6 +4,10 @@
 
 ## 背景介绍
 
+### 0.6.0(151218)
+
+根据网友提议增加提前加载距离threshold，适用于上拉加载更多功能。默认显示到加载区高度2/3时加载。
+
 ### 0.5.0(151217)
 
 感谢交流群里网友各种吐槽上拉加载抖动。发现`touch`和`scroll`同时作用会发生抖动，干脆把上拉加载改为滑到底部自动加载。如依旧需要上拉加载效果，可以下载[releases0.4.0版本](https://github.com/ximan/dropload/releases/tag/0.4.0)。
@@ -79,6 +83,7 @@ $('.element').dropload({
 | domUp      | 上方DOM      | {<br/>domClass : 'dropload-up',<br/>domRefresh : '&lt;div class="dropload-refresh"&gt;↓下拉刷新&lt;/div&gt;',<br/>domUpdate  : '&lt;div class="dropload-update"&gt;↑释放更新&lt;/div&gt;',<br/>domLoad : '&lt;div class="dropload-load"&gt;○加载中...&lt;/div&gt;'<br/>} | 数组 |
 | domDown    | 下方DOM      | {<br/>domClass : 'dropload-down',<br/>domRefresh : '&lt;div class="dropload-refresh"&gt;↑上拉加载更多&lt;/div&gt;',<br/>domLoad : '&lt;div class="dropload-load"&gt;○加载中...&lt;/div&gt;',<br/>domNoData : '&lt;div class="dropload-noData"&gt;暂无数据&lt;/div&gt;'<br/>}  | 数组 |
 | distance   | 拉动距离      | 50 | 数字 |
+| threshold  | 提前加载距离   | 加载区高度2/3 | 正整数 |
 | loadUpFn   | 上方function | 空  | function(me){<br/>//你的代码<br/>me.resetload();<br/>} |
 | loadDownFn | 下方function | 空  | function(me){<br/>//你的代码<br/>me.resetload();<br/>} |
 
@@ -94,11 +99,9 @@ $('.element').dropload({
 
 ## 最新版本
 
-### 0.5.0(151217)
+### 0.6.0(151218)
 
-* 上拉加载改为滑到底部自动加载
-* 删除上拉加载中的↑释放更新
-* 增加无数据`me.noData()` API
+* 增加参数threshold提前加载距离
 
 [所有更新日志](Changelog.md)
 

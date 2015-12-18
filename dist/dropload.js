@@ -1,7 +1,7 @@
 /**
  * dropload
  * 西门
- * 0.5.0(151217)
+ * 0.6.0(151218)
  */
 
 ;(function($){
@@ -46,6 +46,7 @@
                 domNoData  : '<div class="dropload-noData">暂无数据</div>'
             },
             distance : 50,                                                       // 拉动距离
+            threshold : '',                                                      // 提前加载距离
             loadUpFn : '',                                                       // 上方function
             loadDownFn : ''                                                      // 下方function
         }, options);
@@ -101,8 +102,14 @@
         // 加载下方
         me.$scrollArea.on('scroll',function(){
             me._scrollTop = me.$scrollArea.scrollTop();
-            // 当滑到加载区2/3处时加载
-            if(me.opts.loadDownFn != '' && !me.loading && !me.isLock && (me._scrollContentHeight - Math.floor(me.$domDown.height()*1/3)) <= (me._scrollWindowHeight + me._scrollTop)){
+            if(me.opts.threshold === ''){
+                // 默认滑到加载区2/3处时加载
+                me._threshold = Math.floor(me.$domDown.height()*1/3);
+            }else{
+                me._threshold = me.opts.threshold;
+            }
+            
+            if(me.opts.loadDownFn != '' && !me.loading && !me.isLock && (me._scrollContentHeight - me._threshold) <= (me._scrollWindowHeight + me._scrollTop)){
                 me.direction = 'up';
                 me.$domDown.html(me.opts.domDown.domLoad);
                 me.loading = true;
