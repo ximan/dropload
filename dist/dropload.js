@@ -1,7 +1,7 @@
 /**
  * dropload
  * 西门
- * 0.6.0(151218)
+ * 0.7.0(151225)
  */
 
 ;(function($){
@@ -21,7 +21,8 @@
         // loading状态
         me.loading = false;
         // 是否锁定
-        me.isLock = false;
+        me.isLockUp = false;
+        me.isLockDown = false;
         // 是否有数据
         me.isData = true;
         me._scrollTop = 0;
@@ -70,6 +71,11 @@
             me._scrollWindowHeight = me.$element.height();
         }
 
+        // 如果文档高度不大于窗口高度，数据较少，自动加载下方数据
+        if(me._scrollContentHeight <= me._scrollWindowHeight){
+            fnLoadDown();
+        }
+
         // 窗口调整
         $win.on('resize',function(){
             if(me.opts.scrollArea == win){
@@ -82,19 +88,19 @@
 
         // 绑定触摸
         me.$element.on('touchstart',function(e){
-            if(!me.loading && !me.isLock){
+            if(!me.loading){
                 fnTouches(e);
                 fnTouchstart(e, me);
             }
         });
         me.$element.on('touchmove',function(e){
-            if(!me.loading && !me.isLock){
+            if(!me.loading){
                 fnTouches(e, me);
                 fnTouchmove(e, me);
             }
         });
         me.$element.on('touchend',function(){
-            if(!me.loading && !me.isLock){
+            if(!me.loading){
                 fnTouchend(me);
             }
         });
@@ -109,13 +115,18 @@
                 me._threshold = me.opts.threshold;
             }
             
-            if(me.opts.loadDownFn != '' && !me.loading && !me.isLock && (me._scrollContentHeight - me._threshold) <= (me._scrollWindowHeight + me._scrollTop)){
-                me.direction = 'up';
-                me.$domDown.html(me.opts.domDown.domLoad);
-                me.loading = true;
-                me.opts.loadDownFn(me);
+            if(me.opts.loadDownFn != '' && !me.loading && !me.isLockDown && (me._scrollContentHeight - me._threshold) <= (me._scrollWindowHeight + me._scrollTop)){
+                fnLoadDown();
             }
         });
+
+        // 加载下方方法
+        function fnLoadDown(){
+            me.direction = 'up';
+            me.$domDown.html(me.opts.domDown.domLoad);
+            me.loading = true;
+            me.opts.loadDownFn(me);
+        }
     };
 
     // touches
@@ -146,7 +157,7 @@
         var _absMoveY = Math.abs(me._moveY);
 
         // 加载上方
-        if(me.opts.loadUpFn != '' && me.touchScrollTop <= 0 && me.direction == 'down'){
+        if(me.opts.loadUpFn != '' && me.touchScrollTop <= 0 && me.direction == 'down' && !me.isLockUp){
             e.preventDefault();
 
             me.$domUp = $('.'+me.opts.domUp.domClass);
@@ -179,7 +190,7 @@
     // touchend
     function fnTouchend(me){
         var _absMoveY = Math.abs(me._moveY);
-        if(me.opts.loadUpFn != '' && me.touchScrollTop <= 0 && me.direction == 'down'){
+        if(me.opts.loadUpFn != '' && me.touchScrollTop <= 0 && me.direction == 'down' && !me.isLockUp){
             fnTransition(me.$domUp,300);
 
             if(_absMoveY > me.opts.distance){
@@ -207,15 +218,35 @@
     }
 
     // 锁定
-    MyDropLoad.prototype.lock = function(){
+    MyDropLoad.prototype.lock = function(direction){
         var me = this;
-        me.isLock = true;
+        // 如果不指定方向
+        if(direction === undefined){
+            // 如果操作方向向上
+            if(me.direction == 'up'){
+                me.isLockDown = true;
+            // 如果操作方向向下
+            }else if(me.direction == 'down'){
+                me.isLockUp = true;
+            }else{
+                me.isLockUp = true;
+                me.isLockDown = true;
+            }
+        // 如果指定锁上方
+        }else if(direction == 'up'){
+            me.isLockUp = true;
+        // 如果指定锁下方
+        }else if(direction == 'down'){
+            me.isLockDown = true;
+        }
     };
 
     // 解锁
     MyDropLoad.prototype.unlock = function(){
         var me = this;
-        me.isLock = false;
+        // 简单粗暴解锁
+        me.isLockUp = false;
+        me.isLockDown = false;
     };
 
     // 无数据
@@ -228,7 +259,7 @@
     MyDropLoad.prototype.resetload = function(){
         var me = this;
         if(me.direction == 'down' && me.upInsertDOM){
-            me.$domUp.css({'height':'0'}).on('webkitTransitionEnd transitionend',function(){
+            me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend',function(){
                 me.loading = false;
                 me.upInsertDOM = false;
                 $(this).remove();
