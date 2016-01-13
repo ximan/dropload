@@ -1,6 +1,6 @@
 # dropload
 a javascript implementation of pull to refresh and up to loadmore
-&nbsp;
+<br />
 移动端下拉刷新、上拉加载更多插件
 
 ## 背景介绍 (introduce)
@@ -13,9 +13,11 @@ a javascript implementation of pull to refresh and up to loadmore
 
 ### 0.7.0(151225)
 
-* 增加默认判断内容过少自动加载下方内容 
+* 增加默认判断内容过少自动加载下方内容
+<br />
 * Add the content load automatically when it less than a screen
 * 优化`lock()`，默认智能判断，如加参数`lock('up')`锁定上方，如加参数`lock('down')`锁定下方
+<br />
 * lock automatically and use 'lock('up')' and lock('down') to lock refresh and loadmore
 
 [所有更新日志](Changelog.md)
@@ -34,11 +36,13 @@ a javascript implementation of pull to refresh and up to loadmore
 ## 依赖 (dependence)
 
 Zepto 或者 jQuery 1.7以上版本，推荐jQuery 2.x版本（二者不要同时引用）
+<br />
 Zepto or jQuery 1.7+，recommend to use jQuery 2.x（not use them at the same time）
 
 ## 使用方法 (usage)
 
 引用css和js
+<br />
 (basic)
 
     <link rel="stylesheet" href="../dist/dropload.css">
