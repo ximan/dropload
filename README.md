@@ -1,40 +1,44 @@
 # dropload
-
+a javascript implementation of pull to refresh and up to loadmore
 移动端下拉刷新、上拉加载更多插件
 
-## 背景介绍
+## 背景介绍 (introduce)
 
 根据网友提议，默认内容过少时，自动触发加载下方内容，只会加载一次，如果内容还不够一屏，无法继续触发。并且修复`lock()`，增加参数可以手动锁定上方或者下方。
 
 [历史背景介绍](Intro.md)
 
-## 最新版本
+## 最新版本 (The last version)
 
 ### 0.7.0(151225)
 
-* 增加默认判断内容过少自动加载下方内容
+* 增加默认判断内容过少自动加载下方内容 
+* Add the content load automatically when it less than a screen
 * 优化`lock()`，默认智能判断，如加参数`lock('up')`锁定上方，如加参数`lock('down')`锁定下方
+* lock automatically and use 'lock('up')' and lock('down') to lock refresh and loadmore
 
 [所有更新日志](Changelog.md)
 
-## 示例
+## 示例 (demo)
 
 ![扫一扫](examples/load-bottom.png)
-[DEMO1，加载底部](http://ximan.github.io/dropload/examples/load-bottom.html)
+[DEMO1，加载底部(loadmore)](http://ximan.github.io/dropload/examples/load-bottom.html)
 
 ![扫一扫](examples/load-top-bottom.png)
-[DEMO2，加载顶部、底部](http://ximan.github.io/dropload/examples/load-top-bottom.html)
+[DEMO2，加载顶部、底部(refresh & loadmore)](http://ximan.github.io/dropload/examples/load-top-bottom.html)
 
 ![扫一扫](examples/product-list.png)
-[DEMO3，固定布局，加载顶部、底部](http://ximan.github.io/dropload/examples/product-list.html)
+[DEMO3，固定布局，加载顶部、底部(refresh & loadmore with fixed navbar)](http://ximan.github.io/dropload/examples/product-list.html)
 
-## 依赖
+## 依赖 (dependence)
 
 Zepto 或者 jQuery 1.7以上版本，推荐jQuery 2.x版本（二者不要同时引用）
+Zepto or jQuery 1.7+，recommend to use jQuery 2.x（not use them at the same time）
 
-## 使用方法
+## 使用方法 (usage)
 
 引用css和js
+(basic)
 
     <link rel="stylesheet" href="../dist/dropload.css">
     <script src="../dist/dropload.min.js"></script>
@@ -64,7 +68,7 @@ $('.element').dropload({
 
 进阶用法详见上面DEMO2，DEMO3
 
-## 参数列表
+## 参数列表 (options)
 
 |    参数     |     说明     |  默认值 |      可填值     |
 |------------|-------------|--------|----------------|
