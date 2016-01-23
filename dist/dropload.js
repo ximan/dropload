@@ -54,7 +54,7 @@
 
         // 如果加载下方，事先在下方插入DOM
         if(me.opts.loadDownFn != ''){
-            me.$element.append('<div class="'+me.opts.domDown.domClass+'">'+me.opts.domDown.domRefresh+'</div>');
+            me.$element.append('<div class="'+me.opts.domDown.domClass+'">'+me.opts.domDown.domRefresh+'</div>').append('<div style="width:100%;height:0;visibility:hidden;"></div>');
             me.$domDown = $('.'+me.opts.domDown.domClass);
         }
 
