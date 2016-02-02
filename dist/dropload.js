@@ -1,7 +1,7 @@
 /**
  * dropload
  * 西门
- * 0.7.0(151225)
+ * 0.8.0(160202)
  */
 
 ;(function($){
@@ -15,7 +15,7 @@
     };
     var MyDropLoad = function(element, options){
         var me = this;
-        me.$element = $(element);
+        me.$element = element;
         // 上方是否插入DOM
         me.upInsertDOM = false;
         // loading状态
@@ -26,6 +26,7 @@
         // 是否有数据
         me.isData = true;
         me._scrollTop = 0;
+        me._threshold = 0;
         me.init(options);
     };
 
@@ -46,6 +47,7 @@
                 domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
                 domNoData  : '<div class="dropload-noData">暂无数据</div>'
             },
+            autoLoad : true,                                                     // 自动加载
             distance : 50,                                                       // 拉动距离
             threshold : '',                                                      // 提前加载距离
             loadUpFn : '',                                                       // 上方function
@@ -56,6 +58,14 @@
         if(me.opts.loadDownFn != ''){
             me.$element.append('<div class="'+me.opts.domDown.domClass+'">'+me.opts.domDown.domRefresh+'</div>');
             me.$domDown = $('.'+me.opts.domDown.domClass);
+        }
+
+        // 计算提前加载距离
+        if(me.opts.threshold === ''){
+            // 默认滑到加载区2/3处时加载
+            me._threshold = Math.floor(me.$domDown.height()*1/3);
+        }else{
+            me._threshold = me.opts.threshold;
         }
 
         // 判断滚动区域
@@ -70,11 +80,7 @@
             me._scrollContentHeight = me.$element[0].scrollHeight;
             me._scrollWindowHeight = me.$element.height();
         }
-
-        // 如果文档高度不大于窗口高度，数据较少，自动加载下方数据
-        if(me._scrollContentHeight <= me._scrollWindowHeight){
-            fnLoadDown();
-        }
+        fnAutoLoad(me);
 
         // 窗口调整
         $win.on('resize',function(){
@@ -105,28 +111,17 @@
             }
         });
 
+
+
         // 加载下方
         me.$scrollArea.on('scroll',function(){
             me._scrollTop = me.$scrollArea.scrollTop();
-            if(me.opts.threshold === ''){
-                // 默认滑到加载区2/3处时加载
-                me._threshold = Math.floor(me.$domDown.height()*1/3);
-            }else{
-                me._threshold = me.opts.threshold;
-            }
-            
+
+            // 滚动页面触发加载数据
             if(me.opts.loadDownFn != '' && !me.loading && !me.isLockDown && (me._scrollContentHeight - me._threshold) <= (me._scrollWindowHeight + me._scrollTop)){
-                fnLoadDown();
+                loadDown(me);
             }
         });
-
-        // 加载下方方法
-        function fnLoadDown(){
-            me.direction = 'up';
-            me.$domDown.html(me.opts.domDown.domLoad);
-            me.loading = true;
-            me.opts.loadDownFn(me);
-        }
     };
 
     // touches
@@ -208,6 +203,15 @@
         }
     }
 
+    // 如果文档高度不大于窗口高度，数据较少，自动加载下方数据
+    function fnAutoLoad(me){
+        if(me.opts.autoLoad){
+            if((me._scrollContentHeight - me._threshold) <= me._scrollWindowHeight){
+                loadDown(me);
+            }
+        }
+    }
+
     // 重新获取文档高度
     function fnRecoverContentHeight(me){
         if(me.opts.scrollArea == win){
@@ -215,6 +219,14 @@
         }else{
             me._scrollContentHeight = me.$element[0].scrollHeight;
         }
+    }
+
+    // 加载下方
+    function loadDown(me){
+        me.direction = 'up';
+        me.$domDown.html(me.opts.domDown.domLoad);
+        me.loading = true;
+        me.opts.loadDownFn(me);
     }
 
     // 锁定
@@ -255,6 +267,16 @@
         me.isData = false;
     };
 
+    // 加载
+    MyDropLoad.prototype.dropReload = function(){
+        var me = this;
+        // 如果有数据
+        if(me.isData){
+            fnRecoverContentHeight(me);
+            fnAutoLoad(me);
+        }
+    };
+
     // 重置
     MyDropLoad.prototype.resetload = function(){
         var me = this;
@@ -271,7 +293,7 @@
             if(me.isData){
                 // 加载区修改样式
                 me.$domDown.html(me.opts.domDown.domRefresh);
-                fnRecoverContentHeight(me);
+                me.dropReload();
             }else{
                 // 如果没数据
                 me.$domDown.html(me.opts.domDown.domNoData);

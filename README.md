@@ -4,16 +4,17 @@
 
 ## 背景介绍
 
-根据网友提议，默认内容过少时，自动触发加载下方内容，只会加载一次，如果内容还不够一屏，无法继续触发。并且修复`lock()`，增加参数可以手动锁定上方或者下方。
+上次加了默认内容过少自动触发加载下方内容。结果又被吐槽，只有加个参数autoLoad，要么自动触发加载内容，不够一屏继续加载，要么不触发。另外，增加`dropReload（）` API，可以方便类似微博APP点首页就加载页面效果。目前是默认加载下方内容。另外tab功能还没想出来怎么做，容我再想想～～～
 
 [历史背景介绍](Intro.md)
 
 ## 最新版本
 
-### 0.7.0(151225)
+### 0.8.0(160202)
 
-* 增加默认判断内容过少自动加载下方内容
-* 优化`lock()`，默认智能判断，如加参数`lock('up')`锁定上方，如加参数`lock('down')`锁定下方
+* 优化默认判断内容过少自动加载下方内容，如果加载一次不满一屏，继续加载，超过一屏为止
+* 增加参数autoLoad
+* 增加`dropReload（）` API，方便手动调用加载底部方法
 
 [所有更新日志](Changelog.md)
 
@@ -26,7 +27,10 @@
 [DEMO2，加载顶部、底部](http://ximan.github.io/dropload/examples/load-top-bottom.html)
 
 ![扫一扫](examples/product-list.png)
-[DEMO3，固定布局，加载顶部、底部](http://ximan.github.io/dropload/examples/product-list.html)
+[DEMO3，特殊布局，加载顶部、底部](http://ximan.github.io/dropload/examples/product-list.html)
+
+![扫一扫](examples/multiple-load.png)
+[DEMO4，按需加载](http://ximan.github.io/dropload/examples/multiple-load.html)
 
 ## 依赖
 
@@ -62,8 +66,6 @@ $('.element').dropload({
 });
 ````
 
-进阶用法详见上面DEMO2，DEMO3
-
 ## 参数列表
 
 |    参数     |     说明     |  默认值 |      可填值     |
@@ -71,6 +73,7 @@ $('.element').dropload({
 | scrollArea | 滑动区域      | 绑定元素自身 | window |
 | domUp      | 上方DOM      | {<br/>domClass : 'dropload-up',<br/>domRefresh : '&lt;div class="dropload-refresh"&gt;↓下拉刷新&lt;/div&gt;',<br/>domUpdate  : '&lt;div class="dropload-update"&gt;↑释放更新&lt;/div&gt;',<br/>domLoad : '&lt;div class="dropload-load"&gt;○加载中...&lt;/div&gt;'<br/>} | 数组 |
 | domDown    | 下方DOM      | {<br/>domClass : 'dropload-down',<br/>domRefresh : '&lt;div class="dropload-refresh"&gt;↑上拉加载更多&lt;/div&gt;',<br/>domLoad : '&lt;div class="dropload-load"&gt;○加载中...&lt;/div&gt;',<br/>domNoData : '&lt;div class="dropload-noData"&gt;暂无数据&lt;/div&gt;'<br/>}  | 数组 |
+| autoLoad   | 自动加载      | true | true和false |
 | distance   | 拉动距离      | 50 | 数字 |
 | threshold  | 提前加载距离   | 加载区高度2/3 | 正整数 |
 | loadUpFn   | 上方function | 空  | function(me){<br/>//你的代码<br/>me.resetload();<br/>} |
@@ -93,6 +96,17 @@ $('.element').dropload({
 `noData()` 无数据
 
 `resetload()` 重置。每次数据加载完，必须重置
+
+`dropReload()` 手动加载
+
+## 已知问题
+
+* 由于部分Android中UC和QQ浏览器头部有地址栏，并且一开始滑动页面隐藏地址栏时，无法触发scroll和resize，所以会导致部分情况无法使用。解决方案1：增加distance距离，例如DEMO2中distance:50；解决方案2：加`meta`使之全屏显示
+````
+<meta name="full-screen" content="yes">
+<meta name="x5-fullscreen" content="true">
+````
+例如DEMO1
 
 ## dropload使用交流群
 
