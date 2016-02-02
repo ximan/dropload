@@ -28,7 +28,7 @@ a javascript implementation of pull to refresh and up to loadmore
 [DEMO2，加载顶部、底部(refresh & loadmore)](http://ximan.github.io/dropload/examples/load-top-bottom.html)
 
 ![扫一扫](examples/product-list.png)
-[DEMO3，固定布局，加载顶部、底部(refresh & loadmore with fixed navbar)](http://ximan.github.io/dropload/examples/product-list.html)
+[DEMO3，特殊布局，加载顶部、底部(refresh & loadmore with fixed navbar)](http://ximan.github.io/dropload/examples/product-list.html)
 
 ![扫一扫](examples/multiple-load.png)
 [DEMO4，按需加载](http://ximan.github.io/dropload/examples/multiple-load.html)
