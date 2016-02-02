@@ -33,7 +33,7 @@
     // 初始化
     MyDropLoad.prototype.init = function(options){
         var me = this;
-        me.opts = $.extend({}, {
+        me.opts = $.extend(true, {}, {
             scrollArea : me.$element,                                            // 滑动区域
             domUp : {                                                            // 上方DOM
                 domClass   : 'dropload-up',

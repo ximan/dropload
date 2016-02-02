@@ -1,14 +1,15 @@
 # dropload
-
+a javascript implementation of pull to refresh and up to loadmore
+<br />
 移动端下拉刷新、上拉加载更多插件
 
-## 背景介绍
+## 背景介绍 (introduce)
 
 上次加了默认内容过少自动触发加载下方内容。结果又被吐槽，只有加个参数autoLoad，要么自动触发加载内容，不够一屏继续加载，要么不触发。另外，增加`dropReload（）` API，可以方便类似微博APP点首页就加载页面效果。目前是默认加载下方内容。另外tab功能还没想出来怎么做，容我再想想～～～
 
 [历史背景介绍](Intro.md)
 
-## 最新版本
+## 最新版本 (The last version)
 
 ### 0.8.0(160202)
 
@@ -18,27 +19,31 @@
 
 [所有更新日志](Changelog.md)
 
-## 示例
+## 示例 (demo)
 
 ![扫一扫](examples/load-bottom.png)
-[DEMO1，加载底部](http://ximan.github.io/dropload/examples/load-bottom.html)
+[DEMO1，加载底部(loadmore)](http://ximan.github.io/dropload/examples/load-bottom.html)
 
 ![扫一扫](examples/load-top-bottom.png)
-[DEMO2，加载顶部、底部](http://ximan.github.io/dropload/examples/load-top-bottom.html)
+[DEMO2，加载顶部、底部(refresh & loadmore)](http://ximan.github.io/dropload/examples/load-top-bottom.html)
 
 ![扫一扫](examples/product-list.png)
-[DEMO3，特殊布局，加载顶部、底部](http://ximan.github.io/dropload/examples/product-list.html)
+[DEMO3，固定布局，加载顶部、底部(refresh & loadmore with fixed navbar)](http://ximan.github.io/dropload/examples/product-list.html)
 
 ![扫一扫](examples/multiple-load.png)
 [DEMO4，按需加载](http://ximan.github.io/dropload/examples/multiple-load.html)
 
-## 依赖
+## 依赖 (dependence)
 
 Zepto 或者 jQuery 1.7以上版本，推荐jQuery 2.x版本（二者不要同时引用）
+<br />
+Zepto or jQuery 1.7+，recommend to use jQuery 2.x（not use them at the same time）
 
-## 使用方法
+## 使用方法 (usage)
 
 引用css和js
+<br />
+(basic)
 
     <link rel="stylesheet" href="../dist/dropload.css">
     <script src="../dist/dropload.min.js"></script>
@@ -66,7 +71,7 @@ $('.element').dropload({
 });
 ````
 
-## 参数列表
+## 参数列表 (options)
 
 |    参数     |     说明     |  默认值 |      可填值     |
 |------------|-------------|--------|----------------|
