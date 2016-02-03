@@ -33,6 +33,9 @@ a javascript implementation of pull to refresh and up to loadmore
 ![扫一扫](examples/multiple-load.png)
 [DEMO4，按需加载](http://ximan.github.io/dropload/examples/multiple-load.html)
 
+![扫一扫](examples/tab.png)
+[DEMO5，tab加载数据](http://ximan.github.io/dropload/examples/tab.html)
+
 ## 依赖 (dependence)
 
 Zepto 或者 jQuery 1.7以上版本，推荐jQuery 2.x版本（二者不要同时引用）

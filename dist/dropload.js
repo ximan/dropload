@@ -111,8 +111,6 @@
             }
         });
 
-
-
         // 加载下方
         me.$scrollArea.on('scroll',function(){
             me._scrollTop = me.$scrollArea.scrollTop();
@@ -194,7 +192,7 @@
                 me.loading = true;
                 me.opts.loadUpFn(me);
             }else{
-                me.$domUp.css({'height':'0'}).on('webkitTransitionEnd transitionend',function(){
+                me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend',function(){
                     me.upInsertDOM = false;
                     $(this).remove();
                 });
@@ -262,18 +260,12 @@
     };
 
     // 无数据
-    MyDropLoad.prototype.noData = function(){
+    MyDropLoad.prototype.noData = function(flag){
         var me = this;
-        me.isData = false;
-    };
-
-    // 加载
-    MyDropLoad.prototype.dropReload = function(){
-        var me = this;
-        // 如果有数据
-        if(me.isData){
-            fnRecoverContentHeight(me);
-            fnAutoLoad(me);
+        if(flag === undefined || flag == true){
+            me.isData = false;
+        }else if(flag == false){
+            me.isData = true;
         }
     };
 
@@ -293,7 +285,8 @@
             if(me.isData){
                 // 加载区修改样式
                 me.$domDown.html(me.opts.domDown.domRefresh);
-                me.dropReload();
+                fnRecoverContentHeight(me);
+                fnAutoLoad(me);
             }else{
                 // 如果没数据
                 me.$domDown.html(me.opts.domDown.domNoData);
