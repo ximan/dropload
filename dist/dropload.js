@@ -248,6 +248,8 @@
         // 如果指定锁下方
         }else if(direction == 'down'){
             me.isLockDown = true;
+            // 为了解决DEMO5中tab效果bug，因为滑动到下面，再滑上去点tab，direction=down，所以有bug
+            me.direction = 'up';
         }
     };
 
@@ -257,6 +259,8 @@
         // 简单粗暴解锁
         me.isLockUp = false;
         me.isLockDown = false;
+        // 为了解决DEMO5中tab效果bug，因为滑动到下面，再滑上去点tab，direction=down，所以有bug
+        me.direction = 'up';
     };
 
     // 无数据
