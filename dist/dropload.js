@@ -1,7 +1,7 @@
 /**
  * dropload
- * 西门
- * 0.8.0(160202)
+ * 西门(http://ons.me/526.html)
+ * 0.9.0(160215)
  */
 
 ;(function($){
@@ -61,7 +61,7 @@
         }
 
         // 计算提前加载距离
-        if(me.opts.threshold === ''){
+        if(!!me.$domDown && me.opts.threshold === ''){
             // 默认滑到加载区2/3处时加载
             me._threshold = Math.floor(me.$domDown.height()*1/3);
         }else{

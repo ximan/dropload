@@ -5,17 +5,16 @@ a javascript implementation of pull to refresh and up to loadmore
 
 ## 背景介绍 (introduce)
 
-上次加了默认内容过少自动触发加载下方内容。结果又被吐槽，只有加个参数autoLoad，要么自动触发加载内容，不够一屏继续加载，要么不触发。另外，增加`dropReload（）` API，可以方便类似微博APP点首页就加载页面效果。目前是默认加载下方内容。另外tab功能还没想出来怎么做，容我再想想～～～
+年前把tab例子加上来让群友测试，果然群众的力量是伟大的！立马就检测出来bug，我当即修复好，只是用法比较复杂，暂时还想不出更方便的办法。顺便把上个版本的`dropReload()` API删掉，功能集成到之前`resetload()`里。另外还修复一个朋友发现的只调用下拉刷新，代码判断bug。
 
 [历史背景介绍](Intro.md)
 
 ## 最新版本 (The last version)
 
-### 0.8.0(160202)
+### 0.9.0(160215)
 
-* 优化默认判断内容过少自动加载下方内容，如果加载一次不满一屏，继续加载，超过一屏为止
-* 增加参数autoLoad
-* 增加`dropReload（）` API，方便手动调用加载底部方法
+* 删除`dropReload()` API，功能集成到之前`resetload()`里
+* 修复只用下拉刷新，不用上拉加载更多bug
 
 [所有更新日志](Changelog.md)
 
@@ -73,6 +72,7 @@ $('.element').dropload({
     }
 });
 ````
+（注明：所有示例里`ajax`和`setTimeout`都是为了模拟加载效果而写的，与本插件无直接关系。`ajax`建议自己写，无特殊情况不必copy我的`ajax`写法，因为写得太烂。如需下载本地运行，请在本机装服务器环境，否则`ajax`会报错。）
 
 ## 参数列表 (options)
 
