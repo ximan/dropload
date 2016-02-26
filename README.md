@@ -9,7 +9,7 @@ a javascript implementation of pull to refresh and up to loadmore
 
 [历史背景介绍](Intro.md)
 
-## 最新版本 (The last version)
+## 最新版本 (The latest version)
 
 ### 0.9.0(160215)
 
