@@ -249,6 +249,11 @@ $(function(){
                         $('.lists').html(result);
                         // 每次数据加载完，必须重置
                         me.resetload();
+                        // 重置索引值，重新拼接more.json数据
+                        counter = 0;
+                        // 解锁
+                        me.unlock();
+                        me.noData(false);
                     },1000);
                 },
                 error: function(xhr, type){
