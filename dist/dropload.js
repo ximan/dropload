@@ -29,6 +29,8 @@
         me._threshold = 0;
         me.init(options);
     };
+    //函数异步调用
+    var offloadFn = function(fn) { setTimeout(fn||function(){}, 300) };
 
     // 初始化
     MyDropLoad.prototype.init = function(options){
@@ -113,12 +115,14 @@
 
         // 加载下方
         me.$scrollArea.on('scroll',function(){
+
             me._scrollTop = me.$scrollArea.scrollTop();
 
             // 滚动页面触发加载数据
-            if(me.opts.loadDownFn != '' && !me.loading && !me.isLockDown && (me._scrollContentHeight - me._threshold) <= (me._scrollWindowHeight + me._scrollTop)){
+            if(me.opts.loadDownFn != '' && !me.loading && !me.isLockDown && me.direction == 'up' && (me._scrollContentHeight - me._threshold) <= (me._scrollWindowHeight + me._scrollTop)){
                 loadDown(me);
-            }
+            }   
+             
         });
     };
 
@@ -134,6 +138,7 @@
         me._startY = e.touches[0].pageY;
         // 记住触摸时的scrolltop值
         me.touchScrollTop = me.$scrollArea.scrollTop();
+
     }
 
     // touchmove
@@ -191,6 +196,9 @@
                 me.$domUp.html(me.opts.domUp.domLoad);
                 me.loading = true;
                 me.opts.loadUpFn(me);
+                //异步加载数据后，获取实际的文档高度
+                offloadFn(function(){me.resetload();});
+
             }else{
                 me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend',function(){
                     me.upInsertDOM = false;
@@ -204,7 +212,7 @@
     // 如果文档高度不大于窗口高度，数据较少，自动加载下方数据
     function fnAutoLoad(me){
         if(me.opts.autoLoad){
-            if((me._scrollContentHeight - me._threshold) <= me._scrollWindowHeight){
+            if((me._scrollContentHeight - me._threshold) <= me._scrollWindowHeight +  me._scrollTop){
                 loadDown(me);
             }
         }
@@ -225,6 +233,8 @@
         me.$domDown.html(me.opts.domDown.domLoad);
         me.loading = true;
         me.opts.loadDownFn(me);
+        //异步加载数据后，获取实际的文档高度
+        offloadFn(function(){me.resetload();});
     }
 
     // 锁定
@@ -260,7 +270,7 @@
         me.isLockUp = false;
         me.isLockDown = false;
         // 为了解决DEMO5中tab效果bug，因为滑动到下面，再滑上去点tab，direction=down，所以有bug
-        me.direction = 'up';
+        //me.direction = 'up'; 在异步获取数据成功后调用unlock，会导致下拉刷新操作无法重置，故先注释
     };
 
     // 无数据
