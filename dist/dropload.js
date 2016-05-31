@@ -10,6 +10,8 @@
     var doc = document;
     var $win = $(win);
     var $doc = $(doc);
+    //设置下拉距离dist的标记
+    var dist1 = false,dist2 = false,dist3 = false;
     $.fn.dropload = function(options){
         return new MyDropLoad(this, options);
     };
@@ -33,8 +35,6 @@
     // 初始化
     MyDropLoad.prototype.init = function(options){
         var me = this;
-        //设置下拉距离dist的标记
-        var dist1 = false,dist2 = false,dist3 = false;
         me.opts = $.extend(true, {}, {
             scrollArea : me.$element,                                            // 滑动区域
             domUp : {                                                            // 上方DOM
