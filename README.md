@@ -112,8 +112,6 @@ $('.element').dropload({
 
 `resetload()` 重置。每次数据加载完，必须重置
 
-`dropReload()` 手动加载
-
 ## 已知问题
 
 * 由于部分Android中UC和QQ浏览器头部有地址栏，并且一开始滑动页面隐藏地址栏时，无法触发scroll和resize，所以会导致部分情况无法使用。解决方案1：增加distance距离，例如DEMO2中distance:50；解决方案2：加`meta`使之全屏显示
