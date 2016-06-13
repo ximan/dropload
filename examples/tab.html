@@ -202,7 +202,7 @@ $(function(){
                             }
                             // 为了测试，延迟1秒加载
                             setTimeout(function(){
-                                $('.lists').eq(itemIndex).append(result);
+                                $('.lists').eq(0).append(result);
                                 // 每次数据加载完，必须重置
                                 me.resetload();
                             },1000);
@@ -231,7 +231,7 @@ $(function(){
                         }
                         // 为了测试，延迟1秒加载
                         setTimeout(function(){
-                            $('.lists').eq(itemIndex).append(result);
+                            $('.lists').eq(1).append(result);
                             // 每次数据加载完，必须重置
                             me.resetload();
                         },1000);
