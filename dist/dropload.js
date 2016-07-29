@@ -221,10 +221,12 @@
 
     // 加载下方
     function loadDown(me){
-        me.direction = 'up';
-        me.$domDown.html(me.opts.domDown.domLoad);
-        me.loading = true;
-        me.opts.loadDownFn(me);
+        if (me.opts.loadDownFn != '') {
+            me.direction = 'up';
+            me.$domDown.html(me.opts.domDown.domLoad);
+            me.loading = true;
+            me.opts.loadDownFn(me);
+        }
     }
 
     // 锁定
