@@ -1,7 +1,7 @@
 /**
  * dropload
  * 西门(http://ons.me/526.html)
- * 0.9.0(160215)
+ * 0.9.1(161205)
  */
 
 ;(function($){
@@ -84,12 +84,17 @@
 
         // 窗口调整
         $win.on('resize',function(){
-            if(me.opts.scrollArea == win){
+            clearTimeout(me.timer);
+            me.timer = setTimeout(function(){
+                if(me.opts.scrollArea == win){
                 // 重新获取win显示区高度
                 me._scrollWindowHeight = win.innerHeight;
-            }else{
-                me._scrollWindowHeight = me.$element.height();
-            }
+                }else{
+                    me._scrollWindowHeight = me.$element.height();
+                }
+                fnAutoLoad(me);
+            },150);
+            
         });
 
         // 绑定触摸
@@ -203,7 +208,7 @@
 
     // 如果文档高度不大于窗口高度，数据较少，自动加载下方数据
     function fnAutoLoad(me){
-        if(me.opts.autoLoad){
+        if(me.opts.loadDownFn != '' && me.opts.autoLoad){
             if((me._scrollContentHeight - me._threshold) <= me._scrollWindowHeight){
                 loadDown(me);
             }

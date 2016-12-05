@@ -5,17 +5,16 @@ a javascript implementation of pull to refresh and up to loadmore
 
 ## 背景介绍 (introduce)
 
-年前把tab例子加上来让群友测试，果然群众的力量是伟大的！立马就检测出来bug，我当即修复好，只是用法比较复杂，暂时还想不出更方便的办法。顺便把上个版本的`dropReload()` API删掉，功能集成到之前`resetload()`里。另外还修复一个朋友发现的只调用下拉刷新，代码判断bug。
+感谢交流群和github上的网友反馈和建议，修复两个bug。并且把某些demo里ajax获取数据部分从原来的假json改为真正的数据接口，让例子更接近线上开发环境。
 
 [历史背景介绍](Intro.md)
 
 ## 最新版本 (The latest version)
 
-### 0.9.0(160215)
+### 0.9.1(161205)
 
-* 删除`dropReload()` API，功能集成到之前`resetload()`里
-* 优化`noData()`，`noData(false)`为有数据
-* 修复只调用下拉刷新，不调用上拉加载更多bug
+* 修复不调用loadDownFn报错bug
+* 修复窗口改变resize未触发加载数据bug
 
 [所有更新日志](Changelog.md)
 

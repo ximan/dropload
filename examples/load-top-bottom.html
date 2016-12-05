@@ -210,10 +210,10 @@
 <script src="../dist/dropload.min.js"></script>
 <script>
 $(function(){
-    var counter = 0;
-    // 每页展示4个
-    var num = 4;
-    var pageStart = 0,pageEnd = 0;
+    // 页数
+    var page = 0;
+    // 每页展示10个
+    var size = 10;
 
     // dropload
     $('.content').dropload({
@@ -249,9 +249,9 @@ $(function(){
                         $('.lists').html(result);
                         // 每次数据加载完，必须重置
                         me.resetload();
-                        // 重置索引值，重新拼接more.json数据
-                        counter = 0;
-                        // 解锁
+                        // 重置页数，重新获取loadDownFn的数据
+                        page = 0;
+                        // 解锁loadDownFn里锁定的情况
                         me.unlock();
                         me.noData(false);
                     },1000);
@@ -264,34 +264,35 @@ $(function(){
             });
         },
         loadDownFn : function(me){
+            page++;
+            // 拼接HTML
+            var result = '';
             $.ajax({
                 type: 'GET',
-                url: 'json/more.json',
+                url: 'http://ons.me/tools/dropload/json.php?page='+page+'&size='+size,
                 dataType: 'json',
                 success: function(data){
-                    var result = '';
-                    counter++;
-                    pageEnd = num * counter;
-                    pageStart = pageEnd - num;
-
-                    for(var i = pageStart; i < pageEnd; i++){
-                        result +=   '<a class="item opacity" href="'+data.lists[i].link+'">'
-                                        +'<img src="'+data.lists[i].pic+'" alt="">'
-                                        +'<h3>'+data.lists[i].title+'</h3>'
-                                        +'<span class="date">'+data.lists[i].date+'</span>'
-                                    +'</a>';
-                        if((i + 1) >= data.lists.length){
-                            // 锁定
-                            me.lock();
-                            // 无数据
-                            me.noData();
-                            break;
+                    var arrLen = data.length;
+                    if(arrLen > 0){
+                        for(var i=0; i<arrLen; i++){
+                            result +=   '<a class="item opacity" href="'+data[i].link+'">'
+                                            +'<img src="'+data[i].pic+'" alt="">'
+                                            +'<h3>'+data[i].title+'</h3>'
+                                            +'<span class="date">'+data[i].date+'</span>'
+                                        +'</a>';
                         }
+                    // 如果没有数据
+                    }else{
+                        // 锁定
+                        me.lock();
+                        // 无数据
+                        me.noData();
                     }
                     // 为了测试，延迟1秒加载
                     setTimeout(function(){
+                        // 插入数据到页面，放到最后面
                         $('.lists').append(result);
-                        // 每次数据加载完，必须重置
+                        // 每次数据插入，必须重置
                         me.resetload();
                     },1000);
                 },

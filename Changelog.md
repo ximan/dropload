@@ -1,3 +1,8 @@
+### 0.9.1(161205)
+
+* 修复不调用loadDownFn报错bug
+* 修复窗口改变resize未触发加载数据bug
+
 ### 0.9.0(160215)
 
 * 删除`dropReload()` API，功能集成到之前`resetload()`里
