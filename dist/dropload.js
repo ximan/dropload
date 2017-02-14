@@ -10,6 +10,8 @@
     var doc = document;
     var $win = $(win);
     var $doc = $(doc);
+    //设置下拉距离dist的标记
+    var dist1 = false,dist2 = false,dist3 = false;
     $.fn.dropload = function(options){
         return new MyDropLoad(this, options);
     };
@@ -171,14 +173,23 @@
             if(_absMoveY <= me.opts.distance){
                 me._offsetY = _absMoveY;
                 // todo：move时会不断清空、增加dom，有可能影响性能，下同
-                me.$domUp.html(me.opts.domUp.domRefresh);
+                (!dist1 || dist2)?dist1=false:'';
+                if (_absMoveY>15){
+                    !dist1 && me.$domUp.html(me.opts.domUp.domRefresh);
+                    dist1 = true;
+                    dist2 = false;
+                }
             // 指定距离 < 下拉距离 < 指定距离*2
             }else if(_absMoveY > me.opts.distance && _absMoveY <= me.opts.distance*2){
                 me._offsetY = me.opts.distance+(_absMoveY-me.opts.distance)*0.5;
-                me.$domUp.html(me.opts.domUp.domUpdate);
+                (!dist2 || dist3)?dist2=false:'';
+                !dist2 && me.$domUp.html(me.opts.domUp.domUpdate);
+                dist2 = true;
+                dist3 = false;
             // 下拉距离 > 指定距离*2
             }else{
                 me._offsetY = me.opts.distance+me.opts.distance*0.5+(_absMoveY-me.opts.distance*2)*0.2;
+                dist3 = true;
             }
 
             me.$domUp.css({'height': me._offsetY});
