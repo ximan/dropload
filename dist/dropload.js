@@ -305,7 +305,7 @@
 
     // css过渡
     function fnTransition(dom,num){
-        dom.css({
+        dom && dom.css({
             '-webkit-transition':'all '+num+'ms',
             'transition':'all '+num+'ms'
         });
