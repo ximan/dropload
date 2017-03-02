@@ -120,6 +120,9 @@
         me.$scrollArea.on('scroll',function(){
             me._scrollTop = me.$scrollArea.scrollTop();
 
+            // 重新获取文档高度
+            fnRecoverContentHeight(me);
+            
             // 滚动页面触发加载数据
             if(me.opts.loadDownFn != '' && !me.loading && !me.isLockDown && (me._scrollContentHeight - me._threshold) <= (me._scrollWindowHeight + me._scrollTop)){
                 loadDown(me);
