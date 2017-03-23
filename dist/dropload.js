@@ -287,6 +287,7 @@
                 me.upInsertDOM = false;
                 $(this).remove();
                 fnRecoverContentHeight(me);
+                fnAutoLoad(me);
             });
         }else if(me.direction == 'up'){
             me.loading = false;
