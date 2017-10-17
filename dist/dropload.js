@@ -303,6 +303,11 @@
         }
     };
 
+    MyDropLoad.prototype.fnRecoverContentHeight=function () {
+        var me=this;
+        fnRecoverContentHeight(me);
+    }
+
     // css过渡
     function fnTransition(dom,num){
         dom.css({
