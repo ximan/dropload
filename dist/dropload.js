@@ -27,6 +27,8 @@
         me.isData = true;
         me._scrollTop = 0;
         me._threshold = 0;
+        // 是否是首次加载默认是
+        me.initLoad = true;
         me.init(options);
     };
 
@@ -209,6 +211,12 @@
     // 如果文档高度不大于窗口高度，数据较少，自动加载下方数据
     function fnAutoLoad(me){
         if(me.opts.loadDownFn != '' && me.opts.autoLoad){
+
+            // 第一次必须加载，不用比较dom文档高度和win窗口高度,加载完后设置initLoad=false;
+            if (me.initLoad) {
+                return loadDown(me);
+            }
+
             if((me._scrollContentHeight - me._threshold) <= me._scrollWindowHeight){
                 loadDown(me);
             }
@@ -230,6 +238,10 @@
         me.$domDown.html(me.opts.domDown.domLoad);
         me.loading = true;
         me.opts.loadDownFn(me);
+        // 只要加载一次就设置me.initLoad=false
+        if (me.initLoad) {
+            me.initLoad = false;
+        }
     }
 
     // 锁定
