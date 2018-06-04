@@ -57,7 +57,7 @@
         // 如果加载下方，事先在下方插入DOM
         if(me.opts.loadDownFn != ''){
             me.$element.append('<div class="'+me.opts.domDown.domClass+'">'+me.opts.domDown.domRefresh+'</div>');
-            me.$domDown = $('.'+me.opts.domDown.domClass);
+            me.$domDown = $('.'+me.opts.domDown.domClass, me.$element);
         }
 
         // 计算提前加载距离
@@ -110,7 +110,7 @@
                 fnTouchmove(e, me);
             }
         });
-        me.$element.on('touchend',function(){
+        me.$element.on('touchend touchcancel',function(){
             if(!me.loading){
                 fnTouchend(me);
             }
@@ -158,7 +158,7 @@
         if(me.opts.loadUpFn != '' && me.touchScrollTop <= 0 && me.direction == 'down' && !me.isLockUp){
             e.preventDefault();
 
-            me.$domUp = $('.'+me.opts.domUp.domClass);
+            me.$domUp = $('.'+me.opts.domUp.domClass, me.$element);
             // 如果加载区没有DOM
             if(!me.upInsertDOM){
                 me.$element.prepend('<div class="'+me.opts.domUp.domClass+'"></div>');
@@ -188,6 +188,7 @@
     // touchend
     function fnTouchend(me){
         var _absMoveY = Math.abs(me._moveY);
+        var end = false;
         if(me.opts.loadUpFn != '' && me.touchScrollTop <= 0 && me.direction == 'down' && !me.isLockUp){
             fnTransition(me.$domUp,300);
 
@@ -197,10 +198,16 @@
                 me.loading = true;
                 me.opts.loadUpFn(me);
             }else{
-                me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend',function(){
+                me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend webkitTransitioncancel mozTransitioncancel transitioncancel',function(){
                     me.upInsertDOM = false;
                     $(this).remove();
                 });
+                //fix bug: 元素被隐藏后高度为0，而transitionend不会被触发
+            	setTimeout(function(){
+            		if(!me.$domUp.height() && !end) {
+                        me.$domUp.trigger('transitionend');
+            		}
+            	},500);
             }
             me._moveY = 0;
         }
@@ -281,13 +288,21 @@
     // 重置
     MyDropLoad.prototype.resetload = function(){
         var me = this;
+        var end = false;
         if(me.direction == 'down' && me.upInsertDOM){
-            me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend',function(){
-                me.loading = false;
+            me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend webkitTransitioncancel mozTransitioncancel transitioncancel',function(){
+                end = true;
+            	me.loading = false;
                 me.upInsertDOM = false;
                 $(this).remove();
                 fnRecoverContentHeight(me);
             });
+            //fix bug: 元素被隐藏后高度为0，而transitionend不会被触发
+        	setTimeout(function(){
+        		if(!end && !me.$domUp.height()) {
+                    me.$domUp.trigger('transitionend');
+        		}
+        	},500);
         }else if(me.direction == 'up'){
             me.loading = false;
             // 如果有数据
