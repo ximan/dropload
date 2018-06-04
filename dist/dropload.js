@@ -119,6 +119,9 @@
         // 加载下方
         me.$scrollArea.on('scroll',function(){
             me._scrollTop = me.$scrollArea.scrollTop();
+            
+            // 重新获取文档高度 #74 https://github.com/ximan/dropload/pull/74/commits/28abc29bfe65665df4e19f3ce9c7e41a27aa2c27
+            fnRecoverContentHeight(me);
 
             // 滚动页面触发加载数据
             if(me.opts.loadDownFn != '' && !me.loading && !me.isLockDown && (me._scrollContentHeight - me._threshold) <= (me._scrollWindowHeight + me._scrollTop)){
@@ -215,7 +218,7 @@
 
     // 如果文档高度不大于窗口高度，数据较少，自动加载下方数据
     function fnAutoLoad(me){
-        if(me.opts.loadDownFn != '' && me.opts.autoLoad){
+        if(me.opts.loadDownFn != '' && me.opts.autoLoad && !me.loading && !me.isLockDown){
             if((me._scrollContentHeight - me._threshold) <= me._scrollWindowHeight){
                 loadDown(me);
             }
@@ -296,6 +299,8 @@
                 me.upInsertDOM = false;
                 $(this).remove();
                 fnRecoverContentHeight(me);
+                // #77 https://github.com/ximan/dropload/pull/77/commits/95c9521ed856644811ebdbf7124acdfcfd251322
+                fnAutoLoad(me);
             });
             //fix bug: 元素被隐藏后高度为0，而transitionend不会被触发
         	setTimeout(function(){
