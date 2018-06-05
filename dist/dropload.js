@@ -57,7 +57,7 @@
         // 如果加载下方，事先在下方插入DOM
         if(me.opts.loadDownFn != ''){
             me.$element.append('<div class="'+me.opts.domDown.domClass+'">'+me.opts.domDown.domRefresh+'</div>');
-            me.$domDown = $('.'+me.opts.domDown.domClass);
+            me.$domDown = $('.'+me.opts.domDown.domClass, me.$element);
         }
 
         // 计算提前加载距离
@@ -110,7 +110,7 @@
                 fnTouchmove(e, me);
             }
         });
-        me.$element.on('touchend',function(){
+        me.$element.on('touchend touchcancel',function(){
             if(!me.loading){
                 fnTouchend(me);
             }
@@ -119,6 +119,9 @@
         // 加载下方
         me.$scrollArea.on('scroll',function(){
             me._scrollTop = me.$scrollArea.scrollTop();
+            
+            // 重新获取文档高度 #74 https://github.com/ximan/dropload/pull/74/commits/28abc29bfe65665df4e19f3ce9c7e41a27aa2c27
+            fnRecoverContentHeight(me);
 
             // 滚动页面触发加载数据
             if(me.opts.loadDownFn != '' && !me.loading && !me.isLockDown && (me._scrollContentHeight - me._threshold) <= (me._scrollWindowHeight + me._scrollTop)){
@@ -158,7 +161,7 @@
         if(me.opts.loadUpFn != '' && me.touchScrollTop <= 0 && me.direction == 'down' && !me.isLockUp){
             e.preventDefault();
 
-            me.$domUp = $('.'+me.opts.domUp.domClass);
+            me.$domUp = $('.'+me.opts.domUp.domClass, me.$element);
             // 如果加载区没有DOM
             if(!me.upInsertDOM){
                 me.$element.prepend('<div class="'+me.opts.domUp.domClass+'"></div>');
@@ -188,6 +191,7 @@
     // touchend
     function fnTouchend(me){
         var _absMoveY = Math.abs(me._moveY);
+        var end = false;
         if(me.opts.loadUpFn != '' && me.touchScrollTop <= 0 && me.direction == 'down' && !me.isLockUp){
             fnTransition(me.$domUp,300);
 
@@ -197,10 +201,16 @@
                 me.loading = true;
                 me.opts.loadUpFn(me);
             }else{
-                me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend',function(){
+                me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend webkitTransitioncancel mozTransitioncancel transitioncancel',function(){
                     me.upInsertDOM = false;
                     $(this).remove();
                 });
+                //fix bug: 元素被隐藏后高度为0，而transitionend不会被触发
+            	setTimeout(function(){
+            		if(!me.$domUp.height() && !end) {
+                        me.$domUp.trigger('transitionend');
+            		}
+            	},500);
             }
             me._moveY = 0;
         }
@@ -208,7 +218,7 @@
 
     // 如果文档高度不大于窗口高度，数据较少，自动加载下方数据
     function fnAutoLoad(me){
-        if(me.opts.loadDownFn != '' && me.opts.autoLoad){
+        if(me.opts.loadDownFn != '' && me.opts.autoLoad && !me.loading && !me.isLockDown){
             if((me._scrollContentHeight - me._threshold) <= me._scrollWindowHeight){
                 loadDown(me);
             }
@@ -281,13 +291,23 @@
     // 重置
     MyDropLoad.prototype.resetload = function(){
         var me = this;
+        var end = false;
         if(me.direction == 'down' && me.upInsertDOM){
-            me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend',function(){
-                me.loading = false;
+            me.$domUp.css({'height':'0'}).on('webkitTransitionEnd mozTransitionEnd transitionend webkitTransitioncancel mozTransitioncancel transitioncancel',function(){
+                end = true;
+            	me.loading = false;
                 me.upInsertDOM = false;
                 $(this).remove();
                 fnRecoverContentHeight(me);
+                // #77 https://github.com/ximan/dropload/pull/77/commits/95c9521ed856644811ebdbf7124acdfcfd251322
+                fnAutoLoad(me);
             });
+            //fix bug: 元素被隐藏后高度为0，而transitionend不会被触发
+        	setTimeout(function(){
+        		if(!end && !me.$domUp.height()) {
+                    me.$domUp.trigger('transitionend');
+        		}
+        	},500);
         }else if(me.direction == 'up'){
             me.loading = false;
             // 如果有数据
